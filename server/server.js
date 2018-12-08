@@ -20,6 +20,14 @@ io.on('connection' ,(socket) => {//socket argument is similar to socket var in s
     socket.on('disconnect', () => {//When a client disconnects
         console.log("Client disonnected from server")
     })
+    socket.emit('newMessage' , {//(Server to client, emitting the data)
+        from : "Andy",
+        text : "Hey there!",
+        createdAt : 123
+    })
+    socket.on('createMessage' , (message) => {
+        console.log('New message was created', message)
+    })
 
 })
 

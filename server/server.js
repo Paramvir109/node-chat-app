@@ -6,7 +6,6 @@ const socketIO = require('socket.io')
 
 var publicPath = path.join(__dirname,'..','/public')//betterway
 const port = process.env.PORT || 3000
-// console.log(publicPath)
 
 var app = express()
 var server = http.createServer(app)//We can simply use this
@@ -14,19 +13,21 @@ var io = socketIO(server)//We got a socket server back
 app.use(express.static(publicPath))
 
 io.on('connection' ,(socket) => {//socket argument is similar to socket var in script of index.html
-    //connection of a client is a very popular event
     console.log("New user connected")//socket is continuously listening for connection
 
     socket.on('disconnect', () => {//When a client disconnects
         console.log("Client disonnected from server")
     })
-    socket.emit('newMessage' , {//(Server to client, emitting the data)
-        from : "Andy",
-        text : "Hey there!",
-        createdAt : 123
-    })
+    /* Create messsage event from client would emit message to server which in turn would emit the same message
+     to all the connected connections with created at time stamp */
     socket.on('createMessage' , (message) => {
         console.log('New message was created', message)
+        io.emit('newMessage' , {
+            from : message.from,
+            text : message.text,
+            createdAt : new Date().getTime()
+            //This property always sent by server so that user can't manipulate it ***(check in index.js)
+        })
     })
 
 })

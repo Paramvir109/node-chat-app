@@ -3,7 +3,7 @@ const http = require('http')//to configure app with socket.io
 
 const express = require('express')
 const socketIO = require('socket.io')
-var {generateMessage} = require('./utils/message')//This fn returns an object
+var {generateMessage, generateLocationMsg} = require('./utils/message')//This fn returns an object
 
 var publicPath = path.join(__dirname,'..','/public')//betterway
 const port = process.env.PORT || 3000
@@ -37,6 +37,9 @@ io.on('connection' ,(socket) => {//socket argument is similar to socket var in s
         //     text : message.text,
         //     createdAt : new Date().getTime()
         // })
+    })
+    socket.on('createLocationMessage', (coords) => {
+        io.emit('newLocationMessage' , generateLocationMsg('Admin' , coords.latitude ,coords.longitude))
     })
 
 })

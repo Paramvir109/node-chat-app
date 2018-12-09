@@ -28,7 +28,8 @@ io.on('connection' ,(socket) => {//socket argument is similar to socket var in s
     socket.on('createMessage' , (message,callback) => {
         console.log(message)
         io.emit('newMessage' , generateMessage(message.from, message.text))
-        callback('Data from server')//(Got it gets printed on client side. See index.js)
+        callback()
+        // callback('Data from server')//( gets printed on client side. See indexlearn.js)
         //createdAt property always sent by server so that user can't manipulate it ***(check in index.js)
         
         // socket.broadcast.emit('newMessage' , {//Everyone will recieve the message except the current user

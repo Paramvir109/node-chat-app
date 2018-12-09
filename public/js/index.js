@@ -1,5 +1,6 @@
 var socket = io()//This variable is critical. io() return socket(The connection is initiated and maintained)
 let locationButton = $('#send-location')
+let messageTextbox = $('[name=message]')
 
 socket.on('connect', function() {//Using normal function on client side for compatibility on various devices
     console.log("Connected to server")//Client side(chrome's developers console)
@@ -27,11 +28,10 @@ $('#message-form').on('submit', function(e) {
     e.preventDefault()//Prevents from submitting the form 
     socket.emit('createMessage', {
         from : 'User',
-        text : $('[name=message]').val()
+        text : messageTextbox.val()
     }, function() {
-
+        messageTextbox.val('')
     })
-    $('[name=message]').val('')
 
 })
 locationButton.on('click', function() {
@@ -39,13 +39,16 @@ locationButton.on('click', function() {
         return alert('Geolocation not supported by your browser')
 
     }
+    locationButton.attr("disabled", true).html('Sending...');
     navigator.geolocation.getCurrentPosition(function(position) {
         //position is the object we get when we call getCurrentPosition fn
+        locationButton.attr("disabled", false).html('Send Location')//If req goes well
         socket.emit('createLocationMessage', {
             latitude : position.coords.latitude,
             longitude : position.coords.longitude
         })
     },function() {
-        alert('Unable to fetch location/')
+        locationButton.attr("disabled", false).html('Send Location')//If req doesnt go well
+        alert('Unable to fetch location')
     }) 
 })

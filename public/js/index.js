@@ -9,4 +9,19 @@ socket.on('disconnect', function() {
 })
 socket.on('newMessage', function(message) {//Server to client, recieveing at client side
     console.log('New message notification', message);
+    var li = $('<li></li>')//jQuery to create elements
+    li.text(`${message.from} : ${message.text}`)
+    $('#messages').append(li);
+})
+
+$('#message-form').on('submit', function(e) {
+    e.preventDefault()//Prevents from submitting the form 
+    socket.emit('createMessage', {
+        from : 'User',
+        text : $('[name=message]').val()
+    }, function() {
+
+    })
+    $('[name=message]').val('')
+
 })

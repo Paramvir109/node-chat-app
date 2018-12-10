@@ -2,6 +2,21 @@ var socket = io()//This variable is critical. io() return socket(The connection 
 let locationButton = $('#send-location')
 let messageTextbox = $('[name=message]')
 
+function scrollToBottom() {//It would scroll only when last message is just visible to us
+    let messages = $('#messages')
+    let newMessage = $('#messages').children('li:last-child')
+
+    let scrollTop = messages.prop('scrollTop')
+    let scrollHeight = messages.prop('scrollHeight')//Total height of all the msgss
+    let clientHeight = messages.prop('clientHeight')//Part visible to client
+    let newMessageHeight = newMessage.innerHeight()
+    let previousMessageHeight = newMessage.prev().innerHeight()
+    let scrollHeightBeforeNewMsg = scrollHeight - newMessageHeight
+    if(clientHeight + scrollTop >= scrollHeightBeforeNewMsg - previousMessageHeight) {
+        messages.scrollTop(scrollHeight)//So that we scroll to bottom
+    }
+}
+
 socket.on('connect', function() {//Using normal function on client side for compatibility on various devices
     console.log("Connected to server")//Client side(chrome's developers console)
     
@@ -19,6 +34,7 @@ socket.on('newMessage', function(message) {//Server to client, recieveing at cli
         createdAt : formattedTime
     })
     $('#messages').append(html)
+    scrollToBottom()
 })
 socket.on('newLocationMessage' ,function(locationMessage) {
     let formattedTime = moment(locationMessage.createdAt).format('h:mm A');
@@ -29,6 +45,7 @@ socket.on('newLocationMessage' ,function(locationMessage) {
         createdAt : formattedTime
     })
     $('#messages').append(html)
+    scrollToBottom()
 })
 
 $('#message-form').on('submit', function(e) {

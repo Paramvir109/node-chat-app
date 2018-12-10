@@ -7,19 +7,21 @@ socket.on('connect', function() {//Using normal function on client side for comp
     
 })
 socket.on('disconnect', function() {
-    console.log("Disonnected from server")
+    console.log("Disonnected from server")//When server is down or sth
 })
 socket.on('newMessage', function(message) {//Server to client, recieveing at client side
+    let formattedTime = moment(message.createdAt).format('h:mm A');
     console.log('New message notification', message);
     var li = $('<li></li>')//jQuery to create elements
-    li.text(`${message.from} : ${message.text}`)
+    li.text(`${message.from} ${formattedTime}: ${message.text}`)
     $('#messages').append(li);
 })
 socket.on('newLocationMessage' ,function(locationMessage) {
+    let formattedTime = moment(locationMessage.createdAt).format('h:mm A');
     var li = $('<li></li>')
     var a = $('<a target="_blank">My Location</a>')//Target blank will open the link in a new tab
     a.attr("href",locationMessage.url)
-    li.text(`${locationMessage.from} : `)
+    li.text(`${locationMessage.from} ${formattedTime}: `)
     li.append(a)
     $('#messages').append(li);
 })

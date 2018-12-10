@@ -12,18 +12,23 @@ socket.on('disconnect', function() {
 socket.on('newMessage', function(message) {//Server to client, recieveing at client side
     let formattedTime = moment(message.createdAt).format('h:mm A');
     console.log('New message notification', message);
-    var li = $('<li></li>')//jQuery to create elements
-    li.text(`${message.from} ${formattedTime}: ${message.text}`)
-    $('#messages').append(li);
+    let template = $('#message-template').html()
+    let html = Mustache.render(template , {
+        from : message.from,
+        text: message.text,
+        createdAt : formattedTime
+    })
+    $('#messages').append(html)
 })
 socket.on('newLocationMessage' ,function(locationMessage) {
     let formattedTime = moment(locationMessage.createdAt).format('h:mm A');
-    var li = $('<li></li>')
-    var a = $('<a target="_blank">My Location</a>')//Target blank will open the link in a new tab
-    a.attr("href",locationMessage.url)
-    li.text(`${locationMessage.from} ${formattedTime}: `)
-    li.append(a)
-    $('#messages').append(li);
+    let template = $('#location-message-template').html()
+    let html = Mustache.render(template , {
+        from : locationMessage.from,
+        url: locationMessage.url,
+        createdAt : formattedTime
+    })
+    $('#messages').append(html)
 })
 
 $('#message-form').on('submit', function(e) {

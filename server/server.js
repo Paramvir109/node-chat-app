@@ -53,16 +53,23 @@ io.on('connection' ,(socket) => {//socket argument is similar to socket var in s
      to all the connected connections with created at time stamp 
      We emit createMessage in dev console*/
     socket.on('createMessage' , (message,callback) => {
-        console.log(message)
-        io.emit('newMessage' , generateMessage(message.from, message.text))
-        callback()//For acknowledgement
-        // callback('Data from server')//( gets printed on client side. See indexlearn.js)
+        var user = users.getUser(socket.id)
+        if(user && isValidString(message.text)) {
+            io.to(user.room).emit('newMessage' , generateMessage(user.name, message.text))
+
+        }
+        callback()//messagee field becomes blank again//For acknowledgement
+        // callback('Data from server')//( gets printed on client side. See charLearn.js)
         //createdAt property always sent by server so that user can't manipulate it ***(check in index.js)
         
 
     })
     socket.on('createLocationMessage', (coords) => {
-        io.emit('newLocationMessage' , generateLocationMsg('Admin' , coords.latitude ,coords.longitude))
+        var user = users.getUser(socket.id)
+        if(user) {
+            io.to(user.room).emit('newLocationMessage' , generateLocationMsg(user.name,coords.lat,coords.lon))
+
+        }
     })
 
 })

@@ -68,7 +68,8 @@ socket.on('newLocationMessage' ,function(locationMessage) {
 $('#message-form').on('submit', function(e) {
     e.preventDefault()//Prevents from submitting the form 
     socket.emit('createMessage', {
-        from : 'User',
+        // from : $.deparam(window.location.search).name,
+        // room : $.deparam(window.location.search).room, (This was another method to send msgs to room only)
         text : messageTextbox.val()
     }, function() {
         messageTextbox.val('')
@@ -85,8 +86,8 @@ locationButton.on('click', function() {
         //position is the object we get when we call getCurrentPosition fn
         locationButton.attr("disabled", false).html('Send Location')//If req goes well
         socket.emit('createLocationMessage', {
-            latitude : position.coords.latitude,
-            longitude : position.coords.longitude
+            lat : position.coords.latitude,
+            lon : position.coords.longitude
         })
     },function() {
         locationButton.attr("disabled", false).html('Send Location')//If req doesnt go well

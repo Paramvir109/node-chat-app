@@ -19,14 +19,31 @@ function scrollToBottom() {//It would scroll only when last message is just visi
 
 socket.on('connect', function() {//Using normal function on client side for compatibility on various devices
     console.log("Connected to server")//Client side(chrome's developers console)
+    let params = $.deparam(window.location.search)
+    socket.emit('join', params , function(err) {
+        if(err) {
+            alert(err)
+            window.location.href = '/'//Back to the join page
+        }
+        else {
+            console.log('Name and roomname are valid')
+        }
+    })
     
+})
+socket.on('updateUserList', function(users) {
+    let ol = $('<ol></ol>')
+    users.forEach(function(user) {
+        ol.append(`<li>${user}</li>`)
+    })
+    $('#users').html(ol)
 })
 socket.on('disconnect', function() {
     console.log("Disonnected from server")//When server is down or sth
 })
 socket.on('newMessage', function(message) {//Server to client, recieveing at client side
     let formattedTime = moment(message.createdAt).format('h:mm A');
-    console.log('New message notification', message);
+    // console.log('New message notification', message);
     let template = $('#message-template').html()
     let html = Mustache.render(template , {
         from : message.from,

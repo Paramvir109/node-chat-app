@@ -77,7 +77,7 @@
     margin-bottom: 7px;
   }
   
-  .form-field input, .form-field select {
+  .form-field input, .form-field select{
     border: 1px solid #e1e1e1;
     padding: 10px;
   }

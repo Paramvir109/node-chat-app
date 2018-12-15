@@ -58,5 +58,15 @@ describe('Users', () => {
         let user = users.getUser(id)
         expect(user).toBeFalsy()
     })
+    it('should return true for unique user to be added', () => {
+        let name = 'Ish'
+        let ans = users.isUnique(name,'Ok')
+        expect(ans).toBe(true)
+    })
+    it('should return false for non-unique user to be added', () => {
+        let name = 'Dv'
+        let ans = users.isUnique(name,'Ok')
+        expect(ans).toBe(false)
+    })
 
 })

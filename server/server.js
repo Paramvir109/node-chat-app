@@ -35,14 +35,18 @@ io.on('connection' ,(socket) => {//socket argument is similar to socket var in s
 
     socket.on('join', (params,callback) => {
         if(isValidString(params.name) && isValidString(params.room)) {
+            let room = params.room.toLowerCase()//Room is case insensitive
+            if(!users.isUnique(params.name,room)) {
+                return callback('Display name already taken in this room')
+            }
             callback()
-            socket.join(params.room)//It joins a specific room
+            socket.join(room)//It joins a specific room
             users.removeUser(socket.id)//We remove the user from any previous potential rooms
-            users.addUser(socket.id , params.name, params.room)
-            io.to(params.room).emit('updateUserList' , users.getUserList(params.room))
+            users.addUser(socket.id , params.name, room)
+            io.to(room).emit('updateUserList' , users.getUserList(room))
 
             socket.emit('newMessage' , generateMessage('Admin' , 'Welcome to the room'))
-            socket.broadcast.to(params.room).emit('newMessage' , 
+            socket.broadcast.to(room).emit('newMessage' , 
                 generateMessage('Admin' , `${params.name} has joined the room`))
         }
         else {

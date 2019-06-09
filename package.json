@@ -14,6 +14,7 @@
   "author": "Param",
   "license": "ISC",
   "dependencies": {
+    "braces": "^3.0.2",
     "express": "^4.16.4",
     "moment": "^2.22.2",
     "socket.io": "^2.2.0"
